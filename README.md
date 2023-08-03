@@ -28,7 +28,7 @@ public class TestServiceImpl implements TestService {
     }
 }
 ```
-bug: 返回解决，默认值为true的属性，接口返回值为true，而不是service设置的false 
+bug: 返回结果，默认值为true的属性，接口返回值为true，而不是service设置的false 
 ```
 {"success":true,"success1":true,"success2":false,"success3":false,"message":"success"}
 ```
