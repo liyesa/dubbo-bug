@@ -33,27 +33,22 @@ bug: 返回解决，默认值为true的属性，接口返回值为true，而不�
 {"success":true,"success1":true,"success2":false,"success3":false,"message":"success"}
 ```
 
-# 编译
-mvn clean install
-# 启动server
-java --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -jar target/dubbo-bug-1.0.0-SNAPSHOT.jar --server.port=9000
-# 作为client重新编译启动
-# 先注释掉TestServiceImpl.java的@DubboService
-# 编译
-mvn clean install
-# 启动client,http port 9001
-java --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -jar target/dubbo-bug-1.0.0-SNAPSHOT.jar --server.port=9001
-# 测试，重新bug
-curl 0:9001/test
-返回结果：其中success，success1应该为false
+# 执行测试
+执行 ./run.sh
 ```
-{"success":true,"success1":true,"success2":false,"success3":false,"message":"success"}%
+mvn clean install
+java --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -jar ./dubbo-bug-server/target/dubbo-bug-server-1.0.0-SNAPSHOT.jar --server.port=9000 --dubbo.registry.address=127.0.0.1:2181 &
+echo "waiting server start"
+sleep 10
+java --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -jar ./dubbo-bug-client/target/dubbo-bug-client-1.0.0-SNAPSHOT.jar --server.port=9001 --dubbo.registry.address=127.0.0.1:2181 &
+echo "waiting client start"
+sleep 10
+echo "test"
+curl "http://127.0.0.1:9001/test"
+echo "clean"
+jps  | grep dubbo-bug | awk '{print $1}' | xargs -I {}  kill -9 {}
+
 ```
-# 补充
-1. 使用dubbo admin和telnet调用，结果正确
-2. 修改preferSerialization为hessian2，结果正确
-
-
 
 
 
